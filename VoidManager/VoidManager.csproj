@@ -3,7 +3,7 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>VoidManager</AssemblyName>
     <Description>Manages mods for multiplayer, gives users Mod controls via GUI (when provided by the mod, default keybind F5), provides API for developers, and minor Chat improvements.</Description>
-    <Version>1.2.6</Version>
+    <Version>1.2.8</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <RestoreAdditionalProjectSources>

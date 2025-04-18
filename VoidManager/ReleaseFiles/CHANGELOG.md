@@ -1,3 +1,9 @@
+## 1.2.8
+- Reverted GUID change breaking compatibility with old mods.
+
+## 1.2.7
+- Updated for Void Crew 1.1.0
+
 ## 1.2.6
 - Fixed bug which caused enemy damage markers to stay.
 - Added safety to several events.

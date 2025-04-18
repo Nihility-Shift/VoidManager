@@ -1,11 +1,10 @@
 ﻿using CG.Game;
-using CG.Game.SpaceObjects.Controllers;
 using CG.Ship.Modules;
 using Gameplay.Quests;
+using Gameplay.Ship.VoidJump;
 using ResourceAssets;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace VoidManager.Utilities
 {

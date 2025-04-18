@@ -55,7 +55,7 @@
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.*" />
     <PackageReference Include="VCMT.Thunderstore.DocBuilder" Version="0.2.1" PrivateAssets="all" />
-    <PackageReference Include="VoidCrew.GameLibs" Version="1.0.3" />
+    <PackageReference Include="VoidCrew.GameLibs" Version="1.1.0" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />

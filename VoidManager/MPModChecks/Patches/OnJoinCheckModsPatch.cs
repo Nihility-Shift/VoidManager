@@ -26,7 +26,7 @@ namespace VoidManager.MPModChecks.Patches
                 else
                 {
                     //Allow connection
-                    if (BepinPlugin.Bindings.DebugMode.Value)
+                    if (Configs.DebugMode.Value)
                         BepinPlugin.Log.LogInfo($"Joining room '{MRoom.RoomName}'");
                     return true;
                 }

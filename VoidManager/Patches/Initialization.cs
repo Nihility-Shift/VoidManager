@@ -34,8 +34,8 @@ namespace VoidManager.Patches
             ServerSettings serverSettings = PhotonNetwork.PhotonServerSettings;
             if (serverSettings != null)
             {
-                serverSettings.PunLogging = BepinPlugin.Bindings.PunLoggingSettingLevel.Value;
-                serverSettings.AppSettings.NetworkLogging = BepinPlugin.Bindings.PunDebugLogLevel.Value;
+                serverSettings.PunLogging = Configs.PunLoggingSettingLevel.Value;
+                serverSettings.AppSettings.NetworkLogging = Configs.PunDebugLogLevel.Value;
                 PhotonSetupLogging.Invoke(null, null);
             }
             BepinPlugin.Log.LogInfo($"- - - - - - - - - - - - - - - - - - - -");

@@ -52,10 +52,10 @@ namespace VoidManager.CustomGUI
 
         internal void UpdateWindowSize()
         {
-            float Height = BepinPlugin.Bindings.MenuHeight.Value;
-            float Width = BepinPlugin.Bindings.MenuWidth.Value;
-            float ModlistWidth = BepinPlugin.Bindings.MenuListWidth.Value;
-            float PlayerlistWidth = BepinPlugin.Bindings.PlayerListWidth.Value;
+            float Height = Configs.MenuHeight.Value;
+            float Width = Configs.MenuWidth.Value;
+            float ModlistWidth = Configs.MenuListWidth.Value;
+            float PlayerlistWidth = Configs.PlayerListWidth.Value;
 
             Window = new Rect((Screen.width * .5f - ((Screen.width * Width) / 2)), Screen.height * .5f - ((Screen.height * Height) / 2), Screen.width * Width, Screen.height * Height);
             ModListArea = new Rect(6, 43, Window.width * ModlistWidth, Screen.height * Height - 45);
@@ -95,7 +95,7 @@ namespace VoidManager.CustomGUI
 
         void Update()
         {
-            if (BepinPlugin.Bindings.OpenMenu.IsDown())
+            if (Configs.OpenMenu.IsDown())
             {
                 GUIActive = !GUIActive;
                 if (GUIActive)
@@ -183,7 +183,7 @@ namespace VoidManager.CustomGUI
                         EndScrollView();
                     }
                     EndArea();
-                    GUI.skin.label.alignment = BepinPlugin.Bindings.ModInfoTextAnchor.Value;
+                    GUI.skin.label.alignment = Configs.ModInfoTextAnchor.Value;
                     BeginArea(ModInfoArea);
                     {
                         ModInfoScroll = BeginScrollView(ModInfoScroll);
@@ -193,7 +193,7 @@ namespace VoidManager.CustomGUI
                                 BepInPlugin bepInPlugin = selectedMod.BepinPlugin.Metadata;
                                 Label($"Author: {selectedMod.Author}");
                                 Label($"Name: {bepInPlugin.Name}");
-                                if (BepinPlugin.Bindings.DebugMode.Value)
+                                if (Configs.DebugMode.Value)
                                     Label($"GUID: {bepInPlugin.GUID}");
                                 Label($"Version: {bepInPlugin.Version}");
                                 if (selectedMod.Description != string.Empty)
@@ -238,7 +238,7 @@ namespace VoidManager.CustomGUI
                 #endregion
                 #region ModSettings
                 case 1:
-                    GUI.skin.label.alignment = BepinPlugin.Bindings.ModInfoTextAnchor.Value;
+                    GUI.skin.label.alignment = Configs.ModInfoTextAnchor.Value;
                     BeginArea(ModSettingsArea);
                     {
                         ModSettingsScroll = BeginScrollView(ModSettingsScroll);
@@ -257,7 +257,7 @@ namespace VoidManager.CustomGUI
                             {
                                 GUI.skin.label.alignment = TextAnchor.MiddleCenter;
                                 Label(selectedSettings.Name());
-                                GUI.skin.label.alignment = BepinPlugin.Bindings.ModInfoTextAnchor.Value;
+                                GUI.skin.label.alignment = Configs.ModInfoTextAnchor.Value;
                                 if (Button("Back"))
                                 {
                                     LeaveSettingsMenu();
@@ -309,11 +309,11 @@ namespace VoidManager.CustomGUI
                                 Label($"Player: {selectedPlayer.NickName} {(selectedPlayer.IsMasterClient ? "(Host)" : string.Empty)}");
                                 FlexibleSpace();
                                 FlexibleSpace();
-                                BepinPlugin.Bindings.DisplayPlayerModList.Value = Toggle(BepinPlugin.Bindings.DisplayPlayerModList.Value, "Mod List");
-                                BepinPlugin.Bindings.DisplayPlayerSettingsMenus.Value = Toggle(BepinPlugin.Bindings.DisplayPlayerSettingsMenus.Value, "Mod Settings");
+                                Configs.DisplayPlayerModList.Value = Toggle(Configs.DisplayPlayerModList.Value, "Mod List");
+                                Configs.DisplayPlayerSettingsMenus.Value = Toggle(Configs.DisplayPlayerSettingsMenus.Value, "Mod Settings");
                                 EndHorizontal();
-                                if (BepinPlugin.Bindings.DisplayPlayerModList.Value) DrawPlayerModList(selectedPlayer);
-                                if (playerSettings.Count > 0 && BepinPlugin.Bindings.DisplayPlayerSettingsMenus.Value)
+                                if (Configs.DisplayPlayerModList.Value) DrawPlayerModList(selectedPlayer);
+                                if (playerSettings.Count > 0 && Configs.DisplayPlayerSettingsMenus.Value)
                                 {
                                     foreach (PlayerSettingsMenu menu in playerSettings)
                                     {
@@ -646,7 +646,7 @@ namespace VoidManager.CustomGUI
 
         void GUIToggleCursor(bool enable)
         {
-            if (!BepinPlugin.Bindings.MenuUnlockCursor.Value && !(!enable && ShowingCursor))
+            if (!Configs.MenuUnlockCursor.Value && !(!enable && ShowingCursor))
             {
                 return; // Stop early if unlocking cursor is disabled, but allow passthrough if cursor is enabled and is getting set to disabled.
             }

@@ -32,8 +32,8 @@ namespace VoidManager
         {
             VoidPlugin voidPlugin;
 
-            BepinPlugin.Bindings.LoadModListOverride();
-            Dictionary<string, MultiplayerType> OverridenMods = BepinPlugin.Bindings.ModOverrideDictionary;
+            Configs.LoadModListOverride();
+            Dictionary<string, MultiplayerType> OverridenMods = Configs.ModOverrideDictionary;
 
             ActiveVoidPlugins = new();
             GeneratedVoidPlugins = new();
@@ -132,7 +132,7 @@ namespace VoidManager
             inputData.StartedSessionAsHost = CreatedRoomAsHost || GameSessionManager.Instance.StartedSessionAsHost;
             inputData.IsMod_Session = isMod_Session;
 
-            if (VoidManager.BepinPlugin.Bindings.DebugMode.Value)
+            if (Configs.DebugMode.Value)
             {
                 BepinPlugin.Log.LogInfo($"OnSessionChanged callback\ncallType: {inputData.CallType}, isHost: {inputData.IsHost}, IsModSession: {inputData.IsMod_Session}, CreatedRoomAsHost: {inputData.CreatedRoomAsHost}, StartedSessionAshost: {inputData.StartedSessionAsHost}");
             }
@@ -174,7 +174,7 @@ namespace VoidManager
             //Call previous OnSessionChanged values if ModSession changed.
             if (IncrimentedToMod_Session && isMasterClient)
             {
-                if(VoidManager.BepinPlugin.Bindings.DebugMode.Value)
+                if(Configs.DebugMode.Value)
                 {
                     BepinPlugin.Log.LogInfo("Mod requested Incriment to Mod_Session");
                 }

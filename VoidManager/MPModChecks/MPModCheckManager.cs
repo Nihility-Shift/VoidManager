@@ -179,7 +179,7 @@ namespace VoidManager.MPModChecks
             foreach (Player player in PhotonNetwork.PlayerList)
             {
                 // debug print mod list of all players on join.
-                if (BepinPlugin.Bindings.DebugMode.Value)
+                if (Configs.DebugMode.Value)
                 {
                     NetworkedPeerManager.CheckPlayerModsFromProperties(player);
                 }
@@ -437,8 +437,8 @@ namespace VoidManager.MPModChecks
             MPUserDataBlock JoiningPlayerMPData = NetworkedPeerManager.Instance.GetNetworkedPeerMods(joiningPlayer);
             MPModDataBlock[] JoiningClientMods = JoiningPlayerMPData.ModData;
 
-            if (BepinPlugin.Bindings.DebugMode.Value) BepinPlugin.Log.LogInfo($"Host checking user mod list\n{NetworkedPeerManager.GetModListAsString(JoiningClientMods)}");
-            if (BepinPlugin.Bindings.DebugMode.Value) BepinPlugin.Log.LogInfo($"Host mod list:\n{NetworkedPeerManager.GetModListAsString(MyModList)}");
+            if (Configs.DebugMode.Value) BepinPlugin.Log.LogInfo($"Host checking user mod list\n{NetworkedPeerManager.GetModListAsString(JoiningClientMods)}");
+            if (Configs.DebugMode.Value) BepinPlugin.Log.LogInfo($"Host mod list:\n{NetworkedPeerManager.GetModListAsString(MyModList)}");
 
             //Conditions Dictionary Init
             Dictionary<string, CheckConditions> conditions = new();
@@ -465,7 +465,7 @@ namespace VoidManager.MPModChecks
                 CheckConditions condition;
                 if (conditions.TryGetValue(mod.ModGUID, out condition))
                 {
-                    if (BepinPlugin.Bindings.DebugMode.Value) BepinPlugin.Log.LogInfo($"Mod '{mod.ModName}' Matched with Client Mod");
+                    if (Configs.DebugMode.Value) BepinPlugin.Log.LogInfo($"Mod '{mod.ModName}' Matched with Client Mod");
                     condition.ClientModVersion = mod.Version;
                     condition.PlayersWithMod = PlayersWithMod.Both;
                     condition.HashesMatch = mod.Hash.SequenceEqual(condition.Mod.Hash);

@@ -1,16 +1,11 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
-using BepInEx.Configuration;
 using BepInEx.Logging;
-using ExitGames.Client.Photon;
 using HarmonyLib;
-using Photon.Pun;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using VoidManager.Chat.Additions;
 using VoidManager.Chat.Router;
-using static VoidManager.BepinPlugin.Bindings;
 
 namespace VoidManager
 {
@@ -27,6 +22,7 @@ namespace VoidManager
         {
             instance = this;
             Log = Logger;
+            Configs.Load(this);
 
             //Modding Guidelines Compliance - Setup Mod_Local. Mod_Session set later.
             ModdingUtils.SessionModdingType = ModdingType.mod_local;
@@ -40,24 +36,6 @@ namespace VoidManager
             Content.Unlocks.Instance = new();
             Events.Instance = new();
 
-            DebugMode = Config.Bind("General", "DebugMode", false, "");
-            UnspecifiedModListOverride = Config.Bind("General", "Unspecified Mod Overrides", string.Empty, $"Insert mods (not configured for {MyPluginInfo.USERS_PLUGIN_NAME}) for which you would like to override the MPType. \nAvailable MPTypes: client,host,all \nFormat: 'ModNameOrGUID:MPType', delineated by ','. \nEx: {MyPluginInfo.USERS_PLUGIN_NAME}:all,Better Scoop:Host \n ModName/GUID can be gathered from log files and F5 menu.");
-
-            ModInfoTextAnchor = Config.Bind("Menu", "ModInfoTextAnchor", TextAnchor.UpperLeft, "");
-
-            MenuHeight = Config.Bind("Menu", "Height", .50f, "");
-            MenuWidth = Config.Bind("Menu", "Width", .50f, "");
-            MenuListWidth = Config.Bind("Menu", "List Width", .30f, "");
-            PlayerListWidth = Config.Bind("Menu", "Player List Width", .30f, "");
-            MenuUnlockCursor = Config.Bind("Menu", "Unlock Cursor", true, "");
-
-            MenuOpenKeybind = Config.Bind("Menu", "Open Keybind", OpenMenu, "");
-            DisplayPlayerModList = Config.Bind("Menu", "Player Mod List", false, "Display in the Player List GUI");
-            DisplayPlayerSettingsMenus = Config.Bind("Menu", "Player Settings Menus", true, "Display in the Player List GUI");
-
-
-            PunLoggingSettingLevel = Config.Bind("Debug", "PunLogLevel", PunLogLevel.ErrorsOnly);
-            PunDebugLogLevel = Config.Bind("Debug", "PunDebugLevel", DebugLevel.ERROR);
 
             //Fix chainloader getting deleted by GC?
             Chainloader.ManagerObject.hideFlags = HideFlags.HideAndDontSave;
@@ -78,76 +56,6 @@ namespace VoidManager
             Events.Instance.JoinedRoom += AutoComplete.RefreshPlayerList;
 
             Log.LogInfo($"{MyPluginInfo.PLUGIN_GUID} Initialized.");
-            }
-        public class Bindings
-        {
-            public static ConfigEntry<UnityEngine.TextAnchor> ModInfoTextAnchor;
-            public static ConfigEntry<bool> DebugMode;
-
-            /// <summary>
-            /// Safe way to retrieve current DebugMode status.
-            /// </summary>
-            public static bool IsDebugMode
-            {
-                get
-                {
-                    return DebugMode.Value;
-                }
-            }
-
-            public static void SetDefault()
-            {
-                ModInfoTextAnchor.Value = TextAnchor.UpperLeft;
-            }
-
-            internal static ConfigEntry<float> MenuHeight;
-            internal static ConfigEntry<float> MenuWidth;
-            internal static ConfigEntry<float> MenuListWidth;
-            internal static ConfigEntry<float> PlayerListWidth;
-            internal static ConfigEntry<bool> MenuUnlockCursor;
-
-            internal static ConfigEntry<KeyboardShortcut> MenuOpenKeybind;
-            internal static KeyboardShortcut OpenMenu = new KeyboardShortcut(KeyCode.F5);
-
-            internal static ConfigEntry<bool> DisplayPlayerModList;
-            internal static ConfigEntry<bool> DisplayPlayerSettingsMenus;
-
-            internal static ConfigEntry<string> UnspecifiedModListOverride;
-            internal static Dictionary<string, MPModChecks.MultiplayerType> ModOverrideDictionary;
-            internal static void LoadModListOverride()
-            {
-                ModOverrideDictionary = new Dictionary<string, MPModChecks.MultiplayerType>();
-                if (UnspecifiedModListOverride.Value == string.Empty)
-                    return;
-                string[] inputs = UnspecifiedModListOverride.Value.Split(',');
-                foreach(string value in inputs)
-                {
-                    if(value.EndsWith(":all", StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        ModOverrideDictionary.Add(value.Substring(0, value.Length - 4), MPModChecks.MultiplayerType.All);
-                    }
-                    else if(value.EndsWith(":client", StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        ModOverrideDictionary.Add(value.Substring(0, value.Length - 7), MPModChecks.MultiplayerType.Client);
-                    }
-                    else if (value.EndsWith(":host", StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        ModOverrideDictionary.Add(value.Substring(0, value.Length - 5), MPModChecks.MultiplayerType.Host);
-                    }
-                    else if (value.EndsWith(":h", StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        ModOverrideDictionary.Add(value.Substring(0, value.Length - 2), MPModChecks.MultiplayerType.Hidden);
-                    }
-                    else
-                    {
-                        Log.LogError($"Unspecified Mod Override - '{value}' is not a valid input.");
-                    }
-                }
-            }
-
-            //Photon Logging
-            internal static ConfigEntry<PunLogLevel> PunLoggingSettingLevel;
-            internal static ConfigEntry<DebugLevel> PunDebugLogLevel;
         }
     }
 }

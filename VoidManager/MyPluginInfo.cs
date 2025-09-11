@@ -7,7 +7,7 @@ namespace VoidManager
         public const string PLUGIN_GUID = "VoidCrewModdingTeam.VoidManager";
         public const string PLUGIN_NAME = "VoidManager";
         public const string USERS_PLUGIN_NAME = "Void Manager";
-        public const string PLUGIN_VERSION = "1.2.8";
+        public const string PLUGIN_VERSION = "1.2.9";
         public const string PLUGIN_DESCRIPTION = "Manages mods for multiplayer, gives users Mod controls via GUI (when provided by the mod, default keybind F5), provides API for developers, and minor Chat improvements.";
         public const string PLUGIN_ORIGINAL_AUTHOR = "NihilityShift";
         public const string PLUGIN_AUTHORS = "Mest, Dragon, and 18107";

@@ -1,3 +1,6 @@
+## 1.2.9
+- Updated UserID type fro CSteamID to string.
+
 ## 1.2.8
 - Reverted GUID change breaking compatibility with old mods.
 

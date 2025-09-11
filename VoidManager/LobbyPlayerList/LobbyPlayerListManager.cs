@@ -40,7 +40,7 @@ namespace VoidManager.LobbyPlayerList
                 {                                              //
                     LobbyPlayer player = lobbyPlayers[i];      //--PlayerData--
                     writer.Write(player.Name);                 //string Player name
-                    writer.Write((ulong)player.SteamID);       //ulong Player Steam ID
+                    writer.Write(player.UserID);               //string Player User ID
                     writer.Write(player.Rank);                 //int Player Rank
                     writer.Write(player.FavorRank);            //int Player Favor Rank
                 }
@@ -71,10 +71,10 @@ namespace VoidManager.LobbyPlayerList
                     for (int i = 0; i < PlayerCount; i++)             //
                     {                                                 //--PlayerData--
                         string name = reader.ReadString();            //string Player name
-                        ulong SteamID = reader.ReadUInt64();          //ulong Player Steam ID
+                        string UserId = reader.ReadString();          //string Player User ID
                         int rank = reader.ReadInt32();                //int Player Rank
                         int favorRank = reader.ReadInt32();           //int Player Favor Rank
-                        players.Add(new LobbyPlayer(name, SteamID, rank, favorRank));
+                        players.Add(new LobbyPlayer(name, UserId, rank, favorRank));
                     }
                 }
                 return players;

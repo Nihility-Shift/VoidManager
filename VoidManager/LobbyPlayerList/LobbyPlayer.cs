@@ -1,5 +1,4 @@
 ﻿using Photon.Realtime;
-using Steamworks;
 
 namespace VoidManager.LobbyPlayerList
 {
@@ -8,30 +7,22 @@ namespace VoidManager.LobbyPlayerList
         public LobbyPlayer(Player player)
         {
             Name = player.NickName;
-            SteamID = (CSteamID)ulong.Parse(player.UserId);
+            UserID = player.UserId;
             myPlayer = player;
             Rank = LobbyPlayerListManager.GetPlayerRank(player);
             FavorRank = LobbyPlayerListManager.GetPlayerFavorRank(player);
         }
 
-        public LobbyPlayer(string name, ulong steamID, int rank, int favorRank)
+        public LobbyPlayer(string name, string userID, int rank, int favorRank)
         {
             Name = name;
-            SteamID = (CSteamID)steamID;
-            Rank = rank;
-            FavorRank = favorRank;
-        }
-
-        public LobbyPlayer(string name, CSteamID steamID, int rank, int favorRank)
-        {
-            Name = name;
-            SteamID = steamID;
+            UserID = userID;
             Rank = rank;
             FavorRank = favorRank;
         }
 
         internal string Name;
-        internal CSteamID SteamID;
+        internal string UserID;
         internal int Rank;
         internal int FavorRank;
         internal Player myPlayer;

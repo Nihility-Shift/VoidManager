@@ -21,8 +21,8 @@ namespace VoidManager.MPModChecks.Patches
             //Assign Host mod list to room.
             RoomOptions.CustomRoomProperties[InRoomCallbacks.RoomModsPropertyKey] = MPModCheckManager.Instance.MyModListData;
 
-            //Assign Host SteamID and Player name to room.
-            RoomOptions.CustomRoomProperties[InRoomCallbacks.RoomPlayerListPropertyKey] = LobbyPlayerListManager.SerializePlayerList(new List<LobbyPlayer>() { new LobbyPlayer(PhotonNetwork.LocalPlayer.NickName, SteamUser.GetSteamID(), PlayerProfile.Instance.Profile.Rank, PlayerProfile.Instance.Profile.FavorRank) });
+            //Assign Host UserID and Player name to room.
+            RoomOptions.CustomRoomProperties[InRoomCallbacks.RoomPlayerListPropertyKey] = LobbyPlayerListManager.SerializePlayerList(new List<LobbyPlayer>() { new LobbyPlayer(PhotonNetwork.LocalPlayer.NickName, PhotonNetwork.LocalPlayer.UserId, PlayerProfile.Instance.Profile.Rank, PlayerProfile.Instance.Profile.FavorRank) });
 
             //Add Property keys for public display.
             RoomOptions.CustomRoomPropertiesForLobby = RoomOptions.CustomRoomPropertiesForLobby.Concat(new string[] { InRoomCallbacks.RoomModsPropertyKey, InRoomCallbacks.RoomPlayerListPropertyKey }).ToArray();

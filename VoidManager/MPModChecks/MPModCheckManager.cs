@@ -240,6 +240,8 @@ namespace VoidManager.MPModChecks
 
         static void KickPlayerForMissingMods(Player player)
         {
+            if (!PhotonNetwork.PlayerList.Contains(player)) { BepinPlugin.Log.LogMessage($"Kick called for disconencted player {player.NickName}"); return; }
+
             BepinPlugin.Log.LogMessage($"Kicked player {player.NickName} for not having mods.");
             Messaging.Echo($"Kicked player {player.NickName} for not having mods.\n{NetworkedPeerManager.GetModListAsStringForChat(Instance.MyModList.Where(MDB => MDB.MPType == MultiplayerType.All).ToArray())}", false);
             PhotonNetwork.CloseConnection(player);

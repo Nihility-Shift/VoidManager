@@ -212,9 +212,7 @@ namespace VoidManager.MPModChecks
             //Kicks player imediately if no mods and MPType all mods exist.
             if (Instance.HighestLevelOfMPMods == MultiplayerType.All && !JoiningPlayer.CustomProperties.ContainsKey(InRoomCallbacks.PlayerModsPropertyKey))
             {
-                BepinPlugin.Log.LogMessage($"Kicked player {JoiningPlayer.NickName} for not having mods.");
-                Messaging.Echo($"Kicked player {JoiningPlayer.NickName} for not having mods.\n{NetworkedPeerManager.GetModListAsStringForChat(Instance.MyModList.Where(MDB => MDB.MPType == MultiplayerType.All).ToArray())}", false);
-                PhotonNetwork.CloseConnection(JoiningPlayer);
+                KickPlayerForMissingMods(JoiningPlayer);
                 yield break;
             }
 
@@ -232,14 +230,19 @@ namespace VoidManager.MPModChecks
             if (Instance.HighestLevelOfMPMods == MultiplayerType.All)
             {
                 //Kick player if mod no mod list recieved and there are local MPType.All Mods.
-                BepinPlugin.Log.LogMessage($"Kicked player {JoiningPlayer.NickName} for not having mods.");
-                Messaging.Echo($"Kicked player {JoiningPlayer.NickName} for not having mods.\n{NetworkedPeerManager.GetModListAsStringForChat(Instance.MyModList.Where(MDB => MDB.MPType == MultiplayerType.All).ToArray())}", false);
-                PhotonNetwork.CloseConnection(JoiningPlayer);
+                KickPlayerForMissingMods(JoiningPlayer);
             }
             else
             {
                 Events.Instance.OnHostVerifiedClient(JoiningPlayer);
             }
+        }
+
+        static void KickPlayerForMissingMods(Player player)
+        {
+            BepinPlugin.Log.LogMessage($"Kicked player {player.NickName} for not having mods.");
+            Messaging.Echo($"Kicked player {player.NickName} for not having mods.\n{NetworkedPeerManager.GetModListAsStringForChat(Instance.MyModList.Where(MDB => MDB.MPType == MultiplayerType.All).ToArray())}", false);
+            PhotonNetwork.CloseConnection(player);
         }
 
         /// <summary>

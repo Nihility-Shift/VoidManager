@@ -1,5 +1,8 @@
+## 1.2.10
+- Fixed Configs Accessibility for developers.
+
 ## 1.2.9
-- Updated UserID type fro CSteamID to string.
+- Updated UserID type from CSteamID to string.
 
 ## 1.2.8
 - Reverted GUID change breaking compatibility with old mods.

@@ -8,7 +8,7 @@
 
 `BepInEx` Plugin Manager for `Void Crew`
 
-Version 1.2.9  
+Version 1.2.10  
 For Game Version 1.1.0  
 Developed by Mest, Dragon, and 18107  
 Based on [Pulsar Mod Loader](https://github.com/PULSAR-Modders/pulsar-mod-loader)

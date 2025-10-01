@@ -7,10 +7,13 @@ using UnityEngine;
 
 namespace VoidManager
 {
-    internal class Configs
+    /// <summary>
+    /// Config settings for Void Manager
+    /// </summary>
+    public class Configs
     {
         // General
-        public static ConfigEntry<bool> DebugMode;
+        internal static ConfigEntry<bool> DebugMode;
         internal static ConfigEntry<string> UnspecifiedModListOverride;
         internal static Dictionary<string, MPModChecks.MultiplayerType> ModOverrideDictionary;
 
@@ -22,6 +25,9 @@ namespace VoidManager
             get { return DebugMode.Value; }
         }
 
+        /// <summary>
+        /// Sets Info text anchor to default value.
+        /// </summary>
         public static void SetDefault()
         {
             ModInfoTextAnchor.Value = TextAnchor.UpperLeft;
@@ -33,6 +39,9 @@ namespace VoidManager
         internal static ConfigEntry<float> MenuListWidth;
         internal static ConfigEntry<float> PlayerListWidth;
         internal static ConfigEntry<bool> MenuUnlockCursor;
+        /// <summary>
+        /// IMGUI Text anchor position
+        /// </summary>
         public static ConfigEntry<UnityEngine.TextAnchor> ModInfoTextAnchor;
 
         internal static ConfigEntry<KeyboardShortcut> MenuOpenKeybind;

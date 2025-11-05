@@ -1,3 +1,6 @@
+## 1.2.11
+- Updated for Void Crew 1.2.2
+
 ## 1.2.10
 - Fixed Configs Accessibility for developers.
 

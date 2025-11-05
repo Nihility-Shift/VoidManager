@@ -41,7 +41,7 @@ namespace VoidManager.Utilities
         public static void Notification(string message, bool noPrefix = false)
         {
             Assembly assembly = Assembly.GetCallingAssembly();
-            TextChat.Instance?.AddLog(new Log($"{(noPrefix ? "" : assembly.FullName.Split(',')[0])}", message));
+            TextChat.Instance?.AddLog(new LogEntry($"{(noPrefix ? "" : assembly.FullName.Split(',')[0])}", message));
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace VoidManager.Utilities
         public static void Echo(string message, bool local = true)
         {
             if (TextChat.Instance == null) return;
-            if (local) TextChat.Instance.AddLog(new Log($"", message));//fixme
+            if (local) TextChat.Instance.AddLog(new LogEntry($"", message));//fixme
             else
             {
                 VoipService.Instance.SendTextMessage($"[{MyPluginInfo.USERS_PLUGIN_NAME}]: {message}");
@@ -68,7 +68,7 @@ namespace VoidManager.Utilities
         public static void Echo(string message, string messagePrefix, bool local = true)
         {
             if (TextChat.Instance == null) return;
-            if (local) TextChat.Instance.AddLog(new Log($"", message));//fixme
+            if (local) TextChat.Instance.AddLog(new LogEntry($"", message));//fixme
             else
             {
                 VoipService.Instance.SendTextMessage($"[{messagePrefix}]: {message}");

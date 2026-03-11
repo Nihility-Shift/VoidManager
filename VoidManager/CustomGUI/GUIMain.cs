@@ -95,7 +95,7 @@ namespace VoidManager.CustomGUI
 
         void Update()
         {
-            if (Configs.OpenMenu.IsDown())
+            if (Configs.MenuOpenKeybind.Value.IsDown())
             {
                 GUIActive = !GUIActive;
                 if (GUIActive)

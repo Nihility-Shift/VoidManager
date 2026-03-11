@@ -45,7 +45,6 @@ namespace VoidManager
         public static ConfigEntry<UnityEngine.TextAnchor> ModInfoTextAnchor;
 
         internal static ConfigEntry<KeyboardShortcut> MenuOpenKeybind;
-        internal static KeyboardShortcut OpenMenu = new KeyboardShortcut(KeyCode.F5);
 
         internal static ConfigEntry<bool> DisplayPlayerModList;
         internal static ConfigEntry<bool> DisplayPlayerSettingsMenus;
@@ -102,7 +101,7 @@ namespace VoidManager
             PlayerListWidth = plugin.Config.Bind("Menu", "Player List Width", .30f, "");
             MenuUnlockCursor = plugin.Config.Bind("Menu", "Unlock Cursor", true, "");
 
-            MenuOpenKeybind = plugin.Config.Bind("Menu", "Open Keybind", OpenMenu, "");
+            MenuOpenKeybind = plugin.Config.Bind("Menu", "Open Keybind", new KeyboardShortcut(KeyCode.F5), "");
             DisplayPlayerModList = plugin.Config.Bind("Menu", "Player Mod List", false, "Display in the Player List GUI");
             DisplayPlayerSettingsMenus = plugin.Config.Bind("Menu", "Player Settings Menus", true, "Display in the Player List GUI");
 

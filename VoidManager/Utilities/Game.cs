@@ -152,6 +152,30 @@ namespace VoidManager.Utilities
             }
         }
 
+        private static readonly GUIDUnion _SurvivorQuestGUID = new GUIDUnion("c3dcaf364807cae40b836a6ef6ebe748");
+
+        /// <summary>
+        /// GUID of Survivor Challenge
+        /// </summary>
+        public static GUIDUnion SurvivorQuestGUID
+        {
+            get
+            {
+                return _SurvivorQuestGUID;
+            }
+        }
+
+        /// <summary>
+        /// QuestAsset of Survivor Challenge
+        /// </summary>
+        public static QuestAsset SurvivorQuestAsset
+        {
+            get
+            {
+                return GetQuestAsset(SurvivorQuestGUID);
+            }
+        }
+
         /// <summary>
         /// Safely attempts to get QuestAsset from GUID
         /// </summary>
@@ -160,7 +184,7 @@ namespace VoidManager.Utilities
         /// <returns>QuestAsset</returns>
         public static bool TryGetQuestAsset(GUIDUnion QuestGUID, out QuestAsset QuestAsset)
         {
-            if (ResourceAssetContainer<QuestAssetContainer, QuestAsset, QuestAssetDef>.Instance.TryGetByGuid(QuestGUID, out QuestAssetDef questAssetDef))
+            if (QuestAssetContainer.Instance.TryGetByGuid(QuestGUID, out QuestAssetDef questAssetDef))
             {
                 QuestAsset = questAssetDef.Asset;
                 return true;
@@ -177,7 +201,7 @@ namespace VoidManager.Utilities
         /// <returns>QuestAsset</returns>
         public static QuestAsset GetQuestAsset(GUIDUnion QuestGUID)
         {
-            return ResourceAssetContainer<QuestAssetContainer, QuestAsset, QuestAssetDef>.Instance.GetAssetDefById(QuestGUID).Asset;
+            return QuestAssetContainer.Instance.GetAssetDefById(QuestGUID).Asset;
         }
     }
 }

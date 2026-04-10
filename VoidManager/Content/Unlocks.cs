@@ -1,24 +1,17 @@
 ﻿using CG.Client.UserData;
-using HarmonyLib;
+using CG.Ship.Object;
 using ResourceAssets;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace VoidManager.Content
 {
     /// <summary>
-    /// API for modifying UnlockOptions of recipes.
+    /// API for modifying recipe UnlockOptions.
     /// </summary>
-    public class Unlocks
+    public static class Unlocks
     {
-        /// <summary>
-        /// Static instance of Unlocks class.
-        /// </summary>
-        public static Unlocks Instance { get; internal set; }
-
-        static FieldInfo UnlockOptionsFI = AccessTools.Field(typeof(UnlockItemDef), "unlockOptions");
-        private Dictionary<GUIDUnion, Tuple<string, UnlockOptions>> ModifiedUnlockOptions = new();
+        private static Dictionary<GUIDUnion, Tuple<string, UnlockOptions>> ModifiedUnlockOptions = new();
 
         /// <summary>
         /// Sets UnlockOptions for GUID if previously-existing UnlockOptions exists.
@@ -28,9 +21,9 @@ namespace VoidManager.Content
         /// <param name="UnlockOptions"></param>
         /// <exception cref="ArgumentException">An asset with the provided GUID does not exist.</exception>
         /// <returns>UnlockOptions succesfully modified</returns>
-        public bool SetUnlockOptions(GUIDUnion GUID, string CallerID, UnlockOptions UnlockOptions)
+        public static bool SetUnlockOptions(GUIDUnion GUID, string CallerID, UnlockOptions UnlockOptions)
         {
-            if (!ResourceAssetContainer<UnlockContainer, UnityEngine.Object, UnlockItemDef>.Instance.TryGetByGuid(GUID, out UnlockItemDef asset))
+            if (!UnlockContainer.Instance.TryGetByGuid(GUID, out UnlockItemDef asset))
             {
                 throw new ArgumentException("An asset with the provided GUID does not exist.");
             }
@@ -43,14 +36,14 @@ namespace VoidManager.Content
                 }
                 else //Mod that set GUID is overwriting value.
                 {
-                    UnlockOptionsFI.SetValue(asset, UnlockOptions);
+                    asset.unlockOptions = UnlockOptions;
                     return true;
                 }
             }
             else
             {
-                ModifiedUnlockOptions.Add(GUID, new Tuple<string, UnlockOptions>(CallerID, (UnlockOptions)UnlockOptionsFI.GetValue(asset)));
-                UnlockOptionsFI.SetValue(asset, UnlockOptions);
+                ModifiedUnlockOptions.Add(GUID, new Tuple<string, UnlockOptions>(CallerID, asset.unlockOptions));
+                asset.unlockOptions = UnlockOptions;
                 return true;
             }
         }
@@ -60,7 +53,7 @@ namespace VoidManager.Content
         /// </summary>
         /// <param name="GUID"></param>
         /// <param name="CallerID"></param>
-        public void ResetUnlockOptions(GUIDUnion GUID, string CallerID)
+        public static void ResetUnlockOptions(GUIDUnion GUID, string CallerID)
         {
             if (ModifiedUnlockOptions.TryGetValue(GUID, out Tuple<string, UnlockOptions> value))
             {
@@ -68,7 +61,7 @@ namespace VoidManager.Content
                 {
                     throw new ArgumentException("CallerID must match Assignment CallerID. Maybe another mod changed the same UnlockOptions?", "CallerID");
                 }
-                UnlockOptionsFI.SetValue(ResourceAssetContainer<UnlockContainer, UnityEngine.Object, UnlockItemDef>.Instance.GetAssetDefById(GUID), value.Item2);
+                UnlockContainer.Instance.GetAssetDefById(GUID).unlockOptions = value.Item2;
                 ModifiedUnlockOptions.Remove(GUID);
             }
         }
@@ -78,9 +71,9 @@ namespace VoidManager.Content
         /// </summary>
         /// <param name="GUID"></param>
         /// <returns>UnlockOptions for GUID</returns>
-        public UnlockOptions GetUnlockOptions(GUIDUnion GUID)
+        public static UnlockOptions GetUnlockOptions(GUIDUnion GUID)
         {
-            return (UnlockOptions)UnlockOptionsFI.GetValue(ResourceAssetContainer<UnlockContainer, UnityEngine.Object, UnlockItemDef>.Instance.GetAssetDefById(GUID));
+            return UnlockContainer.Instance.GetAssetDefById(GUID).unlockOptions;
         }
 
         /// <summary>
@@ -88,9 +81,37 @@ namespace VoidManager.Content
         /// </summary>
         /// <param name="GUID"></param>
         /// <returns>UnlockOptions modified</returns>
-        public bool UnlockOptionsModified(GUIDUnion GUID)
+        public static bool UnlockOptionsModified(GUIDUnion GUID)
         {
             return ModifiedUnlockOptions.ContainsKey(GUID);
+        }
+
+        /// <summary>
+        /// Creates an UnlockItemDef with values assigned.
+        /// </summary>
+        /// <param name="GUID"></param>
+        /// <param name="UO"></param>
+        /// <param name="rarity"></param>
+        /// <returns></returns>
+        public static UnlockItemDef CreateUnlockItemDef(GUIDUnion GUID, UnlockOptions UO, RarityType rarity = RarityType.None)
+        {
+            UnlockItemDef UIDef = new UnlockItemDef();
+            UnlockItemRef UIRef = new UnlockItemRef(GUID, string.Empty);
+            UIDef.Ref = UIRef;
+            UIDef.rarity = rarity;
+            UIDef.unlockOptions = UO;
+
+            return UIDef;
+        }
+
+        /// <summary>
+        /// Public extension for setting unlock options of a UID.
+        /// </summary>
+        /// <param name="UID"></param>
+        /// <param name="UO"></param>
+        public static void SetUnlockOptions(this UnlockItemDef UID, UnlockOptions UO)
+        {
+            UID.unlockOptions = UO;
         }
     }
 }

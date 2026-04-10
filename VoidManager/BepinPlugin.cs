@@ -32,8 +32,6 @@ namespace VoidManager
             catch (Exception e) { Log.LogError(e); }
 
 
-            //Content.Craftables.Instance = new();
-            Content.Unlocks.Instance = new();
             Events.Instance = new();
 
 

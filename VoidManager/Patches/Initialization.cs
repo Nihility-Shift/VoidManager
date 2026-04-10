@@ -1,10 +1,8 @@
 ﻿using CG.Profile;
 using HarmonyLib;
 using Photon.Pun;
-using RuntimeAssets;
 using System.Reflection;
 using UnityEngine;
-using VoidManager.Content;
 using VoidManager.CustomGUI;
 using VoidManager.LobbyPlayerList;
 using VoidManager.MPModChecks;
@@ -31,8 +29,6 @@ namespace VoidManager.Patches
             NetworkedPeerManager.Instance = new NetworkedPeerManager();
             MPModCheckManager.Instance = new MPModCheckManager();
             LobbyPlayerListManager.Instance = new LobbyPlayerListManager();
-
-            RuntimeAssetLoadingService.Instance.OnIntialized += SupportedContentLoader.Initialize;
 
             //Load Photon Logging settings.
             ServerSettings serverSettings = PhotonNetwork.PhotonServerSettings;

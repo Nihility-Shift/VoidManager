@@ -2,6 +2,7 @@
 using Gameplay.Quests;
 using ResourceAssets;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace VoidManager.Content
@@ -33,8 +34,27 @@ namespace VoidManager.Content
             return questAsset.LootTable.Loot.Remove(lootEntry);
         }
 
+        /*
         /// <summary>
-        /// Attempts to add an asset to the provided Container.
+        /// Creates an Asset Definition for registration with a container.
+        /// </summary>
+        /// <typeparam name="D"></typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="Asset"></param>
+        /// <param name="GUID"></param>
+        /// <returns></returns>
+        public static D CreateAssetDef<D, T>(T Asset, GUIDUnion GUID) where T : UnityEngine.Object where D : ResourceAssetDef<T>
+        {
+            D assetDef = (D)new ResourceAssetDef<T>;
+            ProjectionCosmeticRef assetRef = new ProjectionCosmeticRef(new ResourceAssetRef(GUID, string.Empty));
+            assetRef.ResourceAsset = Asset;
+            assetDef.Ref = assetRef;
+
+            return assetDef;
+        }*/
+
+        /// <summary>
+        /// Attempts to add an asset to the asset container.
         /// </summary>
         /// <typeparam name="U">Container</typeparam>
         /// <typeparam name="T">Object type</typeparam>
@@ -42,8 +62,12 @@ namespace VoidManager.Content
         /// <param name="container">Container for adding resources</param>
         /// <param name="assetDefinition">Asset Definition for adding asset</param>
         /// <returns>succesfully registered asset.</returns>
-        public static bool TryRegisterAsset<U, T, V>(this ResourceAssetContainer<U, T, V> container, V assetDefinition) where U : ResourceAssetContainerBase where T : UnityEngine.Object where V : ResourceAssetDef<T>
+        public static bool TryAddAsset<U, T, V>(this ResourceAssetContainer<U, T, V> container, V assetDefinition) where U : ResourceAssetContainerBase where T : UnityEngine.Object where V : ResourceAssetDef<T>
         {
+            if (container == null) BepinPlugin.Log.LogError("Container was null");
+            if (container.assetDefLUT == null) BepinPlugin.Log.LogError("LUT was null");
+            if (assetDefinition.AssetGuid == null) BepinPlugin.Log.LogError("AssetDef GUID was null");
+
             if (container.assetDefLUT.ContainsKey(assetDefinition.AssetGuid))
             {
                 BepinPlugin.Log.LogWarning("Registration.TryRegisterAsset() Could not register an asset: GUID already exists.");
@@ -54,9 +78,25 @@ namespace VoidManager.Content
             return true;
         }
 
+        /// <summary>
+        /// Removes an asset from the asset container.
+        /// </summary>
+        /// <typeparam name="U"></typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="V"></typeparam>
+        /// <param name="container"></param>
+        /// <param name="assetDefinition">Asset Definition to remove.</param>
+        /// <returns>true if succesful, false if asset was not in the container.</returns>
+        public static bool RemoveAsset<U, T, V>(this ResourceAssetContainer<U, T, V> container, V assetDefinition) where U : ResourceAssetContainerBase where T : UnityEngine.Object where V : ResourceAssetDef<T>
+        {
+            bool Success = container.AssetDescriptions.Remove(assetDefinition);
+            Success &= container.assetDefLUT.Remove(assetDefinition.AssetGuid);
+            return Success;
+        }
+
         private static HashSet<GUIDUnion> VanillaGUIDs;
 
-        private static Dictionary<GUIDUnion, string> RegisteredGUIDs;
+        private static Dictionary<string, GUIDUnion> RegisteredGUIDs = new();
 
         /// <summary>
         /// Finds all Vanilla GUIDs and caches them.
@@ -67,10 +107,9 @@ namespace VoidManager.Content
 
             VanillaGUIDs = new();
 
-            foreach (ResourceAssetContainerBase container in ResourceAssetContainerRegister.Instance.Containers)
+            foreach (IResourceAssetContainer container in ResourceAssetContainerRegister.Instance.Containers)
             {
-                ResourceAssetContainer<ResourceAssetContainerBase, Object, ResourceAssetDef<Object>> AssetContainer = container as ResourceAssetContainer<ResourceAssetContainerBase, Object, ResourceAssetDef<Object>>;
-                foreach (GUIDUnion GUID in AssetContainer.assetDefLUT.Keys)
+                foreach (GUIDUnion GUID in container.GetAllItems().Select(def => def.AssetGuid))
                 {
                     VanillaGUIDs.Add(GUID);
                 }
@@ -87,7 +126,7 @@ namespace VoidManager.Content
             // load vanilla GUIDs if not yet loaded.
             FindVanillaGUIDs();
 
-            if (VanillaGUIDs.Contains(GUID) || RegisteredGUIDs.ContainsKey(GUID)) return true;
+            if (VanillaGUIDs.Contains(GUID) || RegisteredGUIDs.ContainsValue(GUID)) return true;
 
             return false;
         }
@@ -134,14 +173,14 @@ namespace VoidManager.Content
         }
 
         /// <summary>
-        /// Creates and registers a GUID with the provided registration ID. Provide a 100% unique asset registration ID, such as GUID + Asset Name.
+        /// Creates and registers a GUID with the provided registration string. Provide a 100% unique asset registration ID, such as GUID + Asset Name.
         /// </summary>
-        /// <param name="RegistrationID"></param>
+        /// <param name="RegisterString"></param>
         /// <returns>Registered GUID</returns>
-        public static GUIDUnion GenerateAndRegisterGUID(string RegistrationID)
+        public static GUIDUnion GenerateAndRegisterGUID(string RegisterString)
         {
-            GUIDUnion guid = GenerateGUID(RegistrationID);
-            RegisteredGUIDs.Add(guid, RegistrationID);
+            GUIDUnion guid = GenerateGUID(RegisterString);
+            RegisteredGUIDs.Add(RegisterString, guid);
             return guid;
         }
 
@@ -149,17 +188,17 @@ namespace VoidManager.Content
         /// Attempts to researve a custom GUID
         /// </summary>
         /// <param name="guid"></param>
-        /// <param name="RegisterID"></param>
+        /// <param name="RegisterString"></param>
         /// <param name="AutoPickGUID"></param>
         /// <returns></returns>
-        public static bool TryReserveAssetGUID(ref GUIDUnion guid, string RegisterID, bool AutoPickGUID = false)
+        public static bool TryRegisterAssetGUID(ref GUIDUnion guid, string RegisterString, bool AutoPickGUID = false)
         {
             // Pick first available GUID
             if (guid == null || guid == default)
             {
                 if (AutoPickGUID)
                 {
-                    guid = GenerateGUID(RegisterID);
+                    guid = GenerateGUID(RegisterString);
                 }
                 else
                 {
@@ -167,11 +206,11 @@ namespace VoidManager.Content
                 }
             }
 
-            if (VanillaGUIDs.Contains(guid) || RegisteredGUIDs.ContainsKey(guid))
+            if (VanillaGUIDs.Contains(guid) || RegisteredGUIDs.ContainsValue(guid))
             {
                 if (AutoPickGUID)
                 {
-                    guid = GenerateGUID(RegisterID);
+                    guid = GenerateGUID(RegisterString);
                 }
                 else
                 {
@@ -179,8 +218,29 @@ namespace VoidManager.Content
                 }
             }
 
-            RegisteredGUIDs.Add(guid, RegisterID);
+            RegisteredGUIDs.Add(RegisterString, guid);
             return true;
+        }
+
+        /// <summary>
+        /// Finds GUID from provided registration string
+        /// </summary>
+        /// <param name="RegisterString">Unique string used when registering a GUID</param>
+        /// <returns></returns>
+        public static GUIDUnion GetGUID(string RegisterString)
+        {
+            return RegisteredGUIDs[RegisterString];
+        }
+
+        /// <summary>
+        /// Finds GUID from provided registration string
+        /// </summary>
+        /// <param name="RegisterString">Unique string used when registering a GUID</param>
+        /// <param name="GUID"></param>
+        /// <returns>True if found, False if not</returns>
+        public static bool TryGetGUID(string RegisterString, out GUIDUnion GUID)
+        {
+            return RegisteredGUIDs.TryGetValue(RegisterString, out GUID);
         }
     }
 }

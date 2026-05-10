@@ -1,3 +1,6 @@
+## 1.3.0
+- Added loader for .metem content files
+
 ## 1.2.11
 - Updated for Void Crew 1.2.2
 
